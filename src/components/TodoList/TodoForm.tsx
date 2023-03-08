@@ -1,54 +1,37 @@
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Button, TextField, useTheme, Input } from '@mui/material'
+import { Button, TextField, useTheme, Input, Box } from '@mui/material'
 import { TNote } from '@/interfaces/interfaces'
-import { useForm } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { customAlphabet } from 'nanoid'
 import { useAtom } from 'jotai'
-import {
-  notesAtom,
-  nameDefaultAtom,
-  idDefaultAtom,
-  emailDefaultAtom,
-} from '@/jotai/todoJotai'
+import { notesAtom, idDefaultAtom } from '@/jotai/todoJotai'
 import { Add as AddIcon, Edit as EditIcon } from '@mui/icons-material'
 
 const TodoForm: FC = () => {
   const [notes, setNotes] = useAtom(notesAtom)
-  const [nameDef, setNameDef] = useAtom(nameDefaultAtom)
-  const [emailDef, setEmailDef] = useAtom(emailDefaultAtom)
   const [idDef, setIdDef] = useAtom(idDefaultAtom)
   const theme = useTheme()
   const nanoid = customAlphabet('0123456789', 6)
-  const { handleSubmit, register, setValue, reset } = useForm<TNote>()
+  const { handleSubmit, register, reset } = useFormContext<TNote>()
   const onSubmitForm = handleSubmit((data) => {
     if (idDef === 0) {
       setNotes([...notes, { ...data, id: +nanoid() }])
+      reset()
     } else {
       let index = -1
       let temp = notes.filter((_note) => {
-        return _note.id === data.id
+        return _note.id === idDef
       })
       index = notes.indexOf(temp[0])
       setNotes([...notes.slice(0, index), data, ...notes.slice(index + 1)])
-    }
-    if (idDef === 0) {
       reset()
-    } else {
-      setNameDef('')
-      setEmailDef('')
       setIdDef(0)
     }
   })
 
-  useEffect(() => {
-    setValue('name', nameDef)
-    setValue('email', emailDef)
-    setValue('id', idDef)
-  }, [nameDef, emailDef, idDef, setValue])
-
   return (
-    <form onSubmit={onSubmitForm}>
+    <Box component='form' onSubmit={onSubmitForm}>
       <Grid container spacing={2} sx={{ marginY: '5vh' }}>
         <Input type='hidden' defaultValue={0} {...register('id')} />
         <Grid xs={12} sm={6}>
@@ -92,7 +75,7 @@ const TodoForm: FC = () => {
           </Button>
         </Grid>
       </Grid>
-    </form>
+    </Box>
   )
 }
 

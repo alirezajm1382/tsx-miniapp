@@ -10,16 +10,11 @@ import { MouseEvent, useState } from 'react'
 import { MoreHoriz as MoreHorizIcon } from '@mui/icons-material'
 import { ITodoIndividual } from '@/interfaces/interfaces'
 import { useAtom, useSetAtom } from 'jotai'
-import {
-  nameDefaultAtom,
-  emailDefaultAtom,
-  idDefaultAtom,
-  notesAtom,
-} from '@/jotai/todoJotai'
+import { idDefaultAtom, notesAtom } from '@/jotai/todoJotai'
+import { useFormContext } from 'react-hook-form'
 
 const TodoIndividual = ({ note }: ITodoIndividual) => {
-  const setNameDef = useSetAtom(nameDefaultAtom)
-  const setEmailDef = useSetAtom(emailDefaultAtom)
+  const { setValue } = useFormContext()
   const setIdDef = useSetAtom(idDefaultAtom)
   const [notes, setNotes] = useAtom(notesAtom)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -50,9 +45,10 @@ const TodoIndividual = ({ note }: ITodoIndividual) => {
         </Typography>
         <MenuItem
           onClick={() => {
-            setEmailDef(note.email)
+            setValue('name', note.name)
+            setValue('email', note.email)
+            setValue('id', note.email)
             setIdDef(note.id)
-            setNameDef(note.name)
             handleClose()
           }}
         >
