@@ -1,5 +1,4 @@
 import { FC, useState, MouseEvent } from 'react'
-import { motion } from 'framer-motion'
 import { ITodoIndividual } from '@/interfaces/interfaces'
 import {
 	Card,
